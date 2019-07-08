@@ -4,22 +4,33 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\UserService;
+use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Psr\Log\LoggerInterface;
 
 
 class UserController extends AbstractFOSRestController
 {
+
+    private $logger;
+    private $userService;
+
+    public function __construct(LoggerInterface $logger, UserService $userService)
+    {
+        $this->logger = $logger;
+        $this->userService = $userService;
+    }
 
     /**
      * @Rest\Get("/users")
      */
     public function getUsersAction()
     {
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $users = $repository->findAll();
+        $users = $this->userService->getAllUsers();
         $view = $this->view($users, Response::HTTP_OK);
         return $this->handleView($this->view($view));
     }
@@ -29,9 +40,12 @@ class UserController extends AbstractFOSRestController
      */
     public function getUserAction($id)
     {
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $user = $repository->find($id);
-        $view = $this->view($user, Response::HTTP_OK);
+        $user = $this->userService->getUser($id);
+        $status = Response::HTTP_OK;
+        if(!$user){
+            $status = Response::HTTP_NOT_FOUND;
+        }
+        $view = $this->view($user, $status);
         return $this->handleView($this->view($view));
     }
 
@@ -44,18 +58,15 @@ class UserController extends AbstractFOSRestController
         $email = $request->get('email');
         $image = $request->get('image');
 
-        $em = $this->getDoctrine()->getManager();
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $user = $repository->find($id);
+        $user = $this->userService->getUser($id);
+        if(!$user){
+            $view = $this->view(null, Response::HTTP_NOT_FOUND);
+            return $this->handleView($this->view($view));
+        }
 
-        $user->setName($name);
-        $user->setEmail($email);
-        $user->setImage($image);
+        $updatedUser = $this->userService->updateUser($user, $name, $email, $image);
+        $view = $this->view($updatedUser, Response::HTTP_OK);
 
-        $em->persist($user);
-        $em->flush();
-
-        $view = $this->view($user, Response::HTTP_OK);
         return $this->handleView($this->view($view));
     }
 
@@ -64,14 +75,14 @@ class UserController extends AbstractFOSRestController
      */
     public function deleteUserAction($id)
     {
-        $repository = $this->getDoctrine()->getRepository(User::class);
-        $user = $repository->find($id);
+        $user = $this->userService->getUser($id);
+        if(!$user){
+            $view = $this->view(null, Response::HTTP_NOT_FOUND);
+            return $this->handleView($this->view($view));
+        }
 
-        $em = $this->getDoctrine()->getManager();
-        $em->remove($user);
-        $em->flush();
+        $this->userService->deleteUser($user);
 
-        //TODO Que devuelvo?
         $view = $this->view(null, Response::HTTP_OK);
         return $this->handleView($this->view($view));
     }
@@ -88,17 +99,9 @@ class UserController extends AbstractFOSRestController
         $email = $request->get('email');
         $image = $request->get('image');
 
-        $em = $this->getDoctrine()->getManager();
+        $user = $this->userService->addUser($name, $email, $image);
 
-        $user = New User();
-        $user->setName($name);
-        $user->setEmail($email);
-        $user->setImage($image);
-
-        $em->persist($user);
-        $em->flush();
-
-        $view = $this->view($user, Response::HTTP_OK);
+        $view = $this->view($user, Response::HTTP_CREATED);
         return $this->handleView($this->view($view));
     }
 }
