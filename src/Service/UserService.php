@@ -31,6 +31,9 @@ class UserService
 
     public function addUser($name, $email, $image)
     {
+        if(!$name || !$email) {
+            return null;
+        }
         $user = new User();
         $user->setName($name);
         $user->setEmail($email);
@@ -56,11 +59,11 @@ class UserService
     public function deleteUser($userId)
     {
         $user = $this->userRepository->find($userId);
-        if($user) {
-            $this->em->remove($user);
-            $this->em->flush();
-            return $userId;
+        if(!$user) {
+            return null;
         }
-        return null;
+        $this->em->remove($user);
+        $this->em->flush();
+        return $userId;
     }
 }

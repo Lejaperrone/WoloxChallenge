@@ -92,6 +92,10 @@ class UserController extends AbstractFOSRestController
 
         $user = $this->userService->addUser($name, $email, $image);
         $status = Response::HTTP_OK;
+        if(!$user){
+            $status = Response::HTTP_CONFLICT;
+            $user = 'Name or email invalid';
+        }
 
         return new JsonResponse($user, $status);
     }
