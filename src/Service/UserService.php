@@ -40,19 +40,27 @@ class UserService
         return $user;
     }
 
-    public function updateUser($user, $name, $email, $image)
+    public function updateUser($userId, $name, $email, $image)
     {
-        $user->setName($name);
-        $user->setEmail($email);
-        $user->setImage($image);
-        $this->em->persist($user);
-        $this->em->flush();
+        $user = $this->userRepository->find($userId);
+        if($user) {
+            $user->setName($name);
+            $user->setEmail($email);
+            $user->setImage($image);
+            $this->em->persist($user);
+            $this->em->flush();
+        }
         return $user;
     }
 
-    public function deleteUser($user)
+    public function deleteUser($userId)
     {
-        $this->em->remove($user);
-        $this->em->flush();
+        $user = $this->userRepository->find($userId);
+        if($user) {
+            $this->em->remove($user);
+            $this->em->flush();
+            return $userId;
+        }
+        return null;
     }
 }

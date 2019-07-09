@@ -3,15 +3,13 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Service\UserService;
-use Doctrine\ORM\EntityNotFoundException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Psr\Log\LoggerInterface;
-
 
 class UserController extends AbstractFOSRestController
 {
@@ -31,8 +29,7 @@ class UserController extends AbstractFOSRestController
     public function getUsersAction()
     {
         $users = $this->userService->getAllUsers();
-        $view = $this->view($users, Response::HTTP_OK);
-        return $this->handleView($this->view($view));
+        return new JsonResponse($users, Response::HTTP_OK);
     }
 
     /**
@@ -44,9 +41,10 @@ class UserController extends AbstractFOSRestController
         $status = Response::HTTP_OK;
         if(!$user){
             $status = Response::HTTP_NOT_FOUND;
+            $user = 'User with id '. $id .' not found';
         }
-        $view = $this->view($user, $status);
-        return $this->handleView($this->view($view));
+
+        return new JsonResponse($user, $status);
     }
 
     /**
@@ -58,16 +56,15 @@ class UserController extends AbstractFOSRestController
         $email = $request->get('email');
         $image = $request->get('image');
 
-        $user = $this->userService->getUser($id);
+        $status = Response::HTTP_OK;
+
+        $user = $this->userService->updateUser($id, $name, $email, $image);
         if(!$user){
-            $view = $this->view(null, Response::HTTP_NOT_FOUND);
-            return $this->handleView($this->view($view));
+            $status = Response::HTTP_NOT_FOUND;
+            $user = 'User with id '. $id .' not found';
         }
 
-        $updatedUser = $this->userService->updateUser($user, $name, $email, $image);
-        $view = $this->view($updatedUser, Response::HTTP_OK);
-
-        return $this->handleView($this->view($view));
+        return new JsonResponse($user, $status);
     }
 
     /**
@@ -75,21 +72,15 @@ class UserController extends AbstractFOSRestController
      */
     public function deleteUserAction($id)
     {
-        $user = $this->userService->getUser($id);
+        $user = $this->userService->deleteUser($id);
+        $status = Response::HTTP_NO_CONTENT;
         if(!$user){
-            $view = $this->view(null, Response::HTTP_NOT_FOUND);
-            return $this->handleView($this->view($view));
+            $status = Response::HTTP_NOT_FOUND;
+            $user = 'User with id '. $id .' not found';
         }
-
-        $this->userService->deleteUser($user);
-
-        $view = $this->view(null, Response::HTTP_OK);
-        return $this->handleView($this->view($view));
+        return new JsonResponse($user, $status);
     }
 
-
-    //Headers Content-Type application/json
-    //Body {"name": "Alejo", "email": "lejaperrone@gmail.com", "image":"imagen"}
     /**
      * @Rest\Post("/users")
      */
@@ -100,8 +91,8 @@ class UserController extends AbstractFOSRestController
         $image = $request->get('image');
 
         $user = $this->userService->addUser($name, $email, $image);
+        $status = Response::HTTP_OK;
 
-        $view = $this->view($user, Response::HTTP_CREATED);
-        return $this->handleView($this->view($view));
+        return new JsonResponse($user, $status);
     }
 }
