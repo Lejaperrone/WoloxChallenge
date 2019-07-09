@@ -4,13 +4,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use JsonSerializable;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="user")
  */
-class User implements JsonSerializable
+class User
 {
 
     /**
@@ -100,10 +99,5 @@ class User implements JsonSerializable
     public function setImage($image): void
     {
         $this->image = $image;
-    }
-
-    public function jsonSerialize()
-    {
-        return get_object_vars($this);
     }
 }

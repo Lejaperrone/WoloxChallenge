@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Service\UserService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,7 @@ class UserController extends AbstractFOSRestController
     public function getUsersAction()
     {
         $users = $this->userService->getAllUsers();
-        return new JsonResponse($users, Response::HTTP_OK);
+        return new View($users, Response::HTTP_OK);
     }
 
     /**
@@ -43,8 +44,7 @@ class UserController extends AbstractFOSRestController
             $status = Response::HTTP_NOT_FOUND;
             $user = 'User with id '. $id .' not found';
         }
-
-        return new JsonResponse($user, $status);
+        return new View($user, $status);
     }
 
     /**
@@ -64,7 +64,7 @@ class UserController extends AbstractFOSRestController
             $user = 'User with id '. $id .' not found';
         }
 
-        return new JsonResponse($user, $status);
+        return new View($user, $status);
     }
 
     /**
@@ -78,7 +78,7 @@ class UserController extends AbstractFOSRestController
             $status = Response::HTTP_NOT_FOUND;
             $user = 'User with id '. $id .' not found';
         }
-        return new JsonResponse($user, $status);
+        return new View($user, $status);
     }
 
     /**
@@ -97,6 +97,6 @@ class UserController extends AbstractFOSRestController
             $user = 'Name or email invalid';
         }
 
-        return new JsonResponse($user, $status);
+        return new View($user, $status);
     }
 }
