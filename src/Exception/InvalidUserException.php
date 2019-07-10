@@ -6,7 +6,8 @@ namespace App\Exception;
 
 class InvalidUserException extends WoloxChallengeException
 {
-    public function __construct($listOfErrors) {
+    public function __construct($listOfErrors)
+    {
 
         $message = '';
         foreach ($listOfErrors as $error) {
@@ -16,7 +17,8 @@ class InvalidUserException extends WoloxChallengeException
         parent::__construct($message);
     }
 
-    public function __toString() {
+    public function __toString()
+    {
         parent::__toString();
     }
 }

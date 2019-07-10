@@ -28,7 +28,7 @@ class UserService
     public function getUser($userId)
     {
         $user = $this->userRepository->find($userId);
-        if(!$user){
+        if (!$user) {
             throw new UserNotFoundException($userId);
         }
         return $user;
@@ -56,13 +56,13 @@ class UserService
     public function updateUser($userId, $name, $email, $image)
     {
         $user = $this->userRepository->find($userId);
-        if(!$user) {
+        if (!$user) {
             throw new UserNotFoundException($userId);
         }
 
-        if($user->getEmail() != $email){
-            $existantUser =  $this->userRepository->findByEmail($email);
-            if($existantUser){
+        if ($user->getEmail() != $email) {
+            $existantUser = $this->userRepository->findByEmail($email);
+            if ($existantUser) {
                 throw new UserAlreadyExistException($user->getEmail());
             }
         }
@@ -81,7 +81,7 @@ class UserService
     public function deleteUser($userId)
     {
         $user = $this->userRepository->find($userId);
-        if(!$user){
+        if (!$user) {
             throw new UserNotFoundException($userId);
         }
         $this->em->remove($user);
@@ -91,9 +91,9 @@ class UserService
     public function validateUser($user)
     {
         $errors = $this->validator->validate($user);
-        if(count($errors) > 0){
+        if (count($errors) > 0) {
             $errorListMessage = array();
-            foreach ($errors as $error){
+            foreach ($errors as $error) {
                 array_push($errorListMessage, $error->getMessage());
             }
             throw new InvalidUserException($errorListMessage);
