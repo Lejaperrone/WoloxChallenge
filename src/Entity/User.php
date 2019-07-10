@@ -4,6 +4,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
@@ -20,20 +21,26 @@ class User
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=100)
-     *
+     * @ORM\Column(type="string", length=100, nullable=false)
+     * @Assert\NotBlank(
+     *     message="The name cannot be empty."
+     * )
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string", length=100)
-     *
+     * @ORM\Column(type="string", length=100, nullable=false, unique=true)
+     * @Assert\NotBlank(
+     *     message="The email cannot be empty."
+     * )
+     * @Assert\Email(
+     *     message = "The email is not a valid email."
+     * )
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=100)
-     *
      */
     private $image;
 
