@@ -14,9 +14,9 @@ Para lenvantar la aplicación se debe
 2. Editar el archivo .env con los parametros de la base de datos
         - `DATABASE_URL=mysql://root:root@127.0.0.1:3306/WolloxChallenge_db` por ejemplo
 3. Abrir la consola en el directorio del proyecto y ejecutar los siguientes comandos:
-        - `composer install`
-        - `php bin/console doctrine:schema:create`
-        - `symfony server:start`
+   - `composer install`
+   - `php bin/console doctrine:schema:create`
+   - `symfony server:start`
 
 La aplicación se levantará en el puerto 3306 de manera que la ruta inicial será: **localhost:3306**
 
