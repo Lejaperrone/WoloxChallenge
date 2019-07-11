@@ -27,11 +27,7 @@ class UserService
 
     public function getUser($userId)
     {
-        $user = $this->userRepository->find($userId);
-        if (!$user) {
-            throw new UserNotFoundException($userId);
-        }
-        return $user;
+        return $user = $this->validateUserExist($userId);
     }
 
     public function getAllUsers()
@@ -55,17 +51,7 @@ class UserService
 
     public function updateUser($userId, $name, $email, $image)
     {
-        $user = $this->userRepository->find($userId);
-        if (!$user) {
-            throw new UserNotFoundException($userId);
-        }
-
-        if ($user->getEmail() != $email) {
-            $existantUser = $this->userRepository->findByEmail($email);
-            if ($existantUser) {
-                throw new UserAlreadyExistException($user->getEmail());
-            }
-        }
+        $user = $this->validateUserExist($userId);
 
         $user->setName($name);
         $user->setEmail($email);
@@ -88,6 +74,16 @@ class UserService
         $this->em->flush();
     }
 
+    public function validateUserExist($userId)
+    {
+        $user = $this->userRepository->find($userId);
+        if (!$user) {
+            throw new UserNotFoundException($userId);
+        }
+
+        return $user;
+    }
+
     public function validateUser($user)
     {
         $errors = $this->validator->validate($user);
@@ -97,6 +93,11 @@ class UserService
                 array_push($errorListMessage, $error->getMessage());
             }
             throw new InvalidUserException($errorListMessage);
+        }
+
+        $existantUser = $this->userRepository->findOneBy(array('email' => $user->getEmail()));
+        if ($existantUser) {
+            throw new UserAlreadyExistException($user->getEmail());
         }
     }
 }
