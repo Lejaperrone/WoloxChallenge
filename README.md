@@ -49,3 +49,10 @@ Para correr los tests se debe
 
 1. Abrir la consola en el directorio del proyecto y ejecutar el siguiente comando:
    - `php bin/phpunit`
+   
+### Aclaraciones
+Al querer dar de alta o editar un usuario se realizan 4 validaciones
+- Que el nombre no sea nulo.
+- Que el email no sea nulo.
+- Que el email sea un email válido (email@dominio.com).
+- Que no haya un usuario registrado con el mismo email.
