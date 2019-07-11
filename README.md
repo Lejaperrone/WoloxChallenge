@@ -12,7 +12,7 @@ Para lenvantar la aplicación se debe
 
 1. Clonar el proyecto de manera local
 2. Editar el archivo .env con los parametros de la base de datos
-        - `DATABASE_URL=mysql://root:root@127.0.0.1:3306/WolloxChallenge_db` por ejemplo
+   - `DATABASE_URL=mysql://root:root@127.0.0.1:3306/WolloxChallenge_db` por ejemplo
 3. Abrir la consola en el directorio del proyecto y ejecutar los siguientes comandos:
    - `composer install`
    - `php bin/console doctrine:schema:create`
@@ -44,4 +44,8 @@ Las siguientes solicitudes necesitan un objeto con el siguiente formato en el bo
 - PUT Actualizar un usuario
     - `localhost:8080/users/<idUser>`
 
-### Aclaraciones
+### Tests
+Para correr los tests se debe
+
+1. Abrir la consola en el directorio del proyecto y ejecutar el siguiente comando:
+   - `php bin/phpunit`
