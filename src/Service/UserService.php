@@ -42,7 +42,7 @@ class UserService
         $user->setEmail($email);
         $user->setImage($image);
 
-        $this->validateUser($user);
+        $this->validateUserAttributes($user);
 
         $this->em->persist($user);
         $this->em->flush();
@@ -57,7 +57,7 @@ class UserService
         $user->setEmail($email);
         $user->setImage($image);
 
-        $this->validateUser($user);
+        $this->validateUserAttributes($user);
 
         $this->em->persist($user);
         $this->em->flush();
@@ -66,10 +66,8 @@ class UserService
 
     public function deleteUser($userId)
     {
-        $user = $this->userRepository->find($userId);
-        if (!$user) {
-            throw new UserNotFoundException($userId);
-        }
+        $user = $this->validateUserExist($userId);
+
         $this->em->remove($user);
         $this->em->flush();
     }
@@ -84,7 +82,7 @@ class UserService
         return $user;
     }
 
-    public function validateUser($user)
+    public function validateUserAttributes($user)
     {
         $errors = $this->validator->validate($user);
         if (count($errors) > 0) {

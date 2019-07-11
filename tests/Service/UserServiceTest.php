@@ -241,7 +241,7 @@ class UserServiceTest extends TestCase
         $userService->deleteUser(1);
     }
 
-    public function testValidateUserOk()
+    public function testValidateAttributesUserOk()
     {
         $user = new User();
         $user->setId(1);
@@ -260,10 +260,10 @@ class UserServiceTest extends TestCase
             ->willReturn($user);
 
         $userService = new UserService($this->objectManager, $this->validator);
-        $this->assertEquals($userService->validateUser($user), null);
+        $this->assertEquals($userService->validateUserAttributes($user), null);
     }
 
-    public function testValidateUserInvalidUser()
+    public function testValidateAttributesInvalidUser()
     {
         $this->expectException(InvalidUserException::class);
 
@@ -284,6 +284,6 @@ class UserServiceTest extends TestCase
             ->willReturn($user);
 
         $userService = new UserService($this->objectManager, $this->validator);
-        $userService->validateUser($user);
+        $userService->validateUserAttributes($user);
     }
 }
