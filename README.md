@@ -18,7 +18,7 @@ Para lenvantar la aplicación se debe
    - `php bin/console doctrine:schema:create`
    - `symfony server:start`
 
-La aplicación se levantará en el puerto 3306 de manera que la ruta inicial será: **localhost:3306**
+La aplicación se levantará en el puerto 8000 de manera que la ruta inicial será: **localhost:8000**
 
 ### Persistencia
 El modelo de datos que utiliza la aplicación consta de una única tabla 'User' con 4 columnas (id, name, email, image).
