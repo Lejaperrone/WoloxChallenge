@@ -24,7 +24,6 @@ La aplicación se levantará en el puerto 8000 de manera que la ruta inicial ser
 El modelo de datos que utiliza la aplicación consta de una única tabla 'User' con 4 columnas (id, name, email, image).
 
 ### End Points
-Todas las respuestas se encuentran en formato JSON.
 ##### Metodos GET
 - Obtener todos los usuarios
   - `localhost:8080/users`
